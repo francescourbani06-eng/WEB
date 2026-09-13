@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pandas — Guida di riferimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1620;
+    --panel:#141d27;
+    --panel-2:#1a2530;
+    --border:#263340;
+    --text:#e8edf3;
+    --text-dim:#98abbb;
+    --text-faint:#5b6d7f;
+    --blue:#5fb4d9;
+    --amber:#e0a458;
+    --teal:#4fbfa8;
+    --violet:#a394e0;
+    --rose:#d98bab;
+    --lime:#a9c15c;
+    --sans:'IBM Plex Sans', -apple-system, Segoe UI, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; font-size:16.5px;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  h1,h2,h3{font-family:var(--sans);}
+  code{font-family:var(--mono);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(169,193,92,0.09), transparent 55%),
+      var(--bg);
+    border-bottom:1px solid var(--border);
+  }
+  .hero-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:56px 32px 44px;
+    display:flex;
+    gap:48px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .hero-text{flex:1 1 380px;}
+  .kicker{
+    font-family:var(--mono);
+    font-size:.9rem;
+    color:var(--lime);
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:2.15rem;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin:0 0 14px;
+  }
+  .hero p{
+    color:var(--text-dim);
+    max-width:56ch;
+    font-size:1.02rem;
+    margin:0 0 10px;
+  }
+  .hero .hint{
+    font-size:.9rem;
+    color:var(--text-faint);
+  }
+  .hero .hint code{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:1px 6px;
+    color:var(--text-dim);
+  }
+  .hero-diagram{flex:0 0 auto; text-align:center;}
+  .hero-diagram svg{display:block; max-width:100%; height:auto;}
+  .hero-diagram .cap{
+    font-family:var(--mono);
+    font-size:.78rem;
+    color:var(--text-faint);
+    margin-bottom:6px;
+    text-align:left;
+  }
+  .legend{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+    font-family:var(--mono);
+    font-size:.78rem;
+    color:var(--text-faint);
+  }
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .legend i{width:9px; height:9px; border-radius:2px; display:inline-block;}
+
+  /* ---------- LAYOUT ---------- */
+  .page{
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 32px 100px;
+    display:grid;
+    grid-template-columns:240px 1fr;
+    gap:52px;
+  }
+  .toc{
+    position:sticky;
+    top:20px;
+    align-self:start;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    max-height:calc(100vh - 40px);
+    overflow-y:auto;
+    padding-top:32px;
+  }
+  #search{
+    font-family:var(--sans);
+    font-size:.9rem;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:5px;
+    padding:10px 12px;
+    margin-bottom:14px;
+    outline:none;
+  }
+  #search::placeholder{color:var(--text-faint);}
+  #search:focus{border-color:var(--lime);}
+  .toc a{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    text-decoration:none;
+    color:var(--text-dim);
+    font-size:.87rem;
+    padding:7px 9px;
+    border-left:2px solid transparent;
+    border-radius:0 4px 4px 0;
+  }
+  .toc a .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--c);
+    flex:0 0 auto;
+  }
+  .toc a .idx{
+    font-family:var(--mono);
+    color:var(--text-faint);
+    font-size:.78rem;
+  }
+  .toc a:hover{color:var(--text); background:var(--panel);}
+  .toc a.active{color:var(--text); border-left-color:var(--c); background:var(--panel);}
+  .toc a:focus-visible, #search:focus-visible{outline:2px solid var(--lime); outline-offset:2px;}
+
+  main{min-width:0;}
+  .sect{
+    border-left:3px solid var(--c);
+    border-top:1px solid var(--border);
+    padding:38px 0 38px 22px;
+  }
+  .sect:first-child{border-top:none; padding-top:32px;}
+  .sect-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .sect-idx{font-family:var(--mono); color:var(--text-faint); font-size:.88rem;}
+  .sect-title{font-size:1.4rem; font-weight:600; margin:0;}
+  .sect-desc{color:var(--text-dim); max-width:68ch; font-size:1rem; margin:10px 0 24px;}
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(290px,1fr));
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:15px 16px;
+  }
+  .card .sig{
+    font-family:var(--mono);
+    font-size:.97rem;
+    font-weight:600;
+    color:var(--text);
+    word-break:break-word;
+  }
+  .card .desc{
+    font-size:.92rem;
+    color:var(--text-dim);
+    margin:8px 0 10px;
+    line-height:1.5;
+  }
+  .card pre{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:10px 11px;
+    margin:0;
+    font-family:var(--mono);
+    font-size:.82rem;
+    color:var(--text-dim);
+    overflow-x:auto;
+    line-height:1.6;
+  }
+  .card pre .r{color:var(--text-faint);}
+
+  .rows{
+    border:1px solid var(--border);
+    border-radius:5px;
+    overflow:hidden;
+    margin-bottom:6px;
+  }
+  .row-item{
+    display:flex;
+    gap:16px;
+    padding:10px 16px;
+    font-size:.9rem;
+    border-top:1px solid var(--border);
+    background:var(--panel);
+    flex-wrap:wrap;
+  }
+  .row-item:first-child{border-top:none;}
+  .row-item .fn{
+    font-family:var(--mono);
+    color:var(--text);
+    min-width:220px;
+    flex-shrink:0;
+  }
+  .row-item .d{color:var(--text-dim);}
+
+  .callout{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:19px 21px;
+    margin-bottom:14px;
+  }
+  .callout h3{margin:0 0 9px; font-size:1.06rem;}
+  .callout p{margin:0; color:var(--text-dim); font-size:.93rem; max-width:72ch; line-height:1.6;}
+  .callout pre{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:10px 11px;
+    margin-top:14px;
+    font-family:var(--mono);
+    font-size:.82rem;
+    color:var(--text-dim);
+    overflow-x:auto;
+    line-height:1.6;
+  }
+  .callout pre .r{color:var(--text-faint);}
+  .callout pre .ok{color:var(--teal);}
+  .callout pre .bad{color:var(--rose);}
+
+  .tips{display:grid; gap:10px;}
+  .tip{
+    display:flex;
+    gap:13px;
+    padding:14px 16px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+  }
+  .tip .n{font-family:var(--mono); color:var(--text-faint); flex:0 0 auto;}
+  .tip p{margin:0; color:var(--text-dim); font-size:.93rem; line-height:1.55;}
+  .tip strong{color:var(--text);}
+
+  .hidden{display:none !important;}
+
+  footer{
+    max-width:1200px;
+    margin:0 auto;
+    padding:28px 32px 60px;
+    color:var(--text-faint);
+    font-size:.85rem;
+    border-top:1px solid var(--border);
+  }
+  footer a{color:var(--text-dim); text-decoration:underline;}
+
+  @media (max-width:860px){
+    .page{grid-template-columns:1fr; gap:0;}
+    .toc{
+      position:static;
+      flex-direction:row;
+      flex-wrap:wrap;
+      max-height:none;
+      overflow:visible;
+      padding-top:24px;
+      margin-bottom:8px;
+      gap:4px;
+    }
+    .toc a{font-size:.82rem; padding:6px 9px;}
+    #search{width:100%; margin-bottom:10px;}
+    .hero-inner{padding:40px 20px 32px;}
+    .page{padding:0 20px 80px;}
+    .sect{padding-left:16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="kicker">import pandas as pd</p>
+      <h1>Guida di riferimento a Pandas</h1>
+      <p>Segue le sei lezioni del micro-corso gratuito <strong>Pandas</strong> su Kaggle Learn — da leggere un CSV fino a raggruppare, pulire e combinare le tabelle — più due sezioni extra su concetti chiave e su come scrivere codice pandas che si legge bene.</p>
+      <p class="hint">Usa la ricerca nel menu per saltare dritto a <code>groupby</code>, <code>loc</code>, <code>merge</code>...</p>
+    </div>
+    <div class="hero-diagram">
+      <div class="cap">reviews.head(4)</div>
+      <svg viewBox="0 0 440 250" width="400" role="img" aria-label="DataFrame di esempio con la colonna points e la riga di indice 1 evidenziate">
+        <!-- table outer border -->
+        <rect x="40" y="30" width="356" height="194" rx="4" fill="#141d27" stroke="#263340"/>
+        <!-- header bg -->
+        <rect x="40" y="30" width="356" height="34" fill="#1a2530"/>
+
+        <!-- column highlight: points -->
+        <rect x="268" y="30" width="64" height="194" fill="#4fbfa8" opacity="0.13"/>
+        <!-- row highlight: iloc[1] -->
+        <rect x="40" y="104" width="356" height="40" fill="#e0a458" opacity="0.16"/>
+        <!-- intersection outline: loc[1,'points'] -->
+        <rect x="268" y="104" width="64" height="40" fill="none" stroke="#5fb4d9" stroke-width="2"/>
+
+        <!-- divider lines (vertical) -->
+        <line x1="80"  y1="30" x2="80"  y2="224" stroke="#263340"/>
+        <line x1="164" y1="30" x2="164" y2="224" stroke="#263340"/>
+        <line x1="268" y1="30" x2="268" y2="224" stroke="#263340"/>
+        <line x1="332" y1="30" x2="332" y2="224" stroke="#263340"/>
+        <!-- divider lines (horizontal) -->
+        <line x1="40" y1="64"  x2="396" y2="64"  stroke="#263340"/>
+        <line x1="40" y1="104" x2="396" y2="104" stroke="#263340"/>
+        <line x1="40" y1="144" x2="396" y2="144" stroke="#263340"/>
+        <line x1="40" y1="184" x2="396" y2="184" stroke="#263340"/>
+
+        <!-- header text -->
+        <text x="60"  y="51" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">#</text>
+        <text x="122" y="51" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">country</text>
+        <text x="216" y="51" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">province</text>
+        <text x="300" y="51" font-family="IBM Plex Mono" font-size="12" fill="#4fbfa8" text-anchor="middle">points</text>
+        <text x="364" y="51" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">price</text>
+
+        <!-- row 0 -->
+        <text x="60"  y="88" font-family="IBM Plex Mono" font-size="12" fill="#5b6d7f" text-anchor="middle">0</text>
+        <text x="122" y="88" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">Italy</text>
+        <text x="216" y="88" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">Veneto</text>
+        <text x="300" y="88" font-family="IBM Plex Mono" font-size="12" fill="#4fbfa8" text-anchor="middle">87</text>
+        <text x="364" y="88" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">19</text>
+
+        <!-- row 1 (highlighted) -->
+        <text x="60"  y="128" font-family="IBM Plex Mono" font-size="12" fill="#e8edf3" text-anchor="middle">1</text>
+        <text x="122" y="128" font-family="IBM Plex Mono" font-size="12" fill="#e8edf3" text-anchor="middle">US</text>
+        <text x="216" y="128" font-family="IBM Plex Mono" font-size="12" fill="#e8edf3" text-anchor="middle">California</text>
+        <text x="300" y="128" font-family="IBM Plex Mono" font-size="13" font-weight="600" fill="#5fb4d9" text-anchor="middle">91</text>
+        <text x="364" y="128" font-family="IBM Plex Mono" font-size="12" fill="#e8edf3" text-anchor="middle">32</text>
+
+        <!-- row 2 -->
+        <text x="60"  y="168" font-family="IBM Plex Mono" font-size="12" fill="#5b6d7f" text-anchor="middle">2</text>
+        <text x="122" y="168" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">France</text>
+        <text x="216" y="168" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">Bordeaux</text>
+        <text x="300" y="168" font-family="IBM Plex Mono" font-size="12" fill="#4fbfa8" text-anchor="middle">89</text>
+        <text x="364" y="168" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">28</text>
+
+        <!-- row 3 -->
+        <text x="60"  y="208" font-family="IBM Plex Mono" font-size="12" fill="#5b6d7f" text-anchor="middle">3</text>
+        <text x="122" y="208" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">Portugal</text>
+        <text x="216" y="208" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">Douro</text>
+        <text x="300" y="208" font-family="IBM Plex Mono" font-size="12" fill="#4fbfa8" text-anchor="middle">94</text>
+        <text x="364" y="208" font-family="IBM Plex Mono" font-size="12" fill="#93a6b7" text-anchor="middle">45</text>
+      </svg>
+      <div class="legend">
+        <span><i style="background:#4fbfa8"></i>reviews['points']</span>
+        <span><i style="background:#e0a458"></i>reviews.iloc[1]</span>
+        <span><i style="background:#5fb4d9"></i>reviews.loc[1,'points']</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <aside class="toc">
+    <input id="search" type="search" placeholder="Cerca una funzione…" autocomplete="off">
+    <nav>
+      <a href="#creare" style="--c:var(--blue)"><span class="dot"></span><span class="idx">00</span>Creare, leggere, scrivere</a>
+      <a href="#selezione" style="--c:var(--teal)"><span class="dot"></span><span class="idx">01</span>Indicizzazione e selezione</a>
+      <a href="#riepilogo" style="--c:var(--amber)"><span class="dot"></span><span class="idx">02</span>Riepilogo e mappe</a>
+      <a href="#gruppi" style="--c:var(--violet)"><span class="dot"></span><span class="idx">03</span>Raggruppare e ordinare</a>
+      <a href="#tipi" style="--c:var(--rose)"><span class="dot"></span><span class="idx">04</span>Tipi e valori mancanti</a>
+      <a href="#combinare" style="--c:var(--lime)"><span class="dot"></span><span class="idx">05</span>Rinominare e combinare</a>
+      <a href="#concetti" style="--c:var(--blue)"><span class="dot"></span><span class="idx">06</span>Concetti chiave</a>
+      <a href="#pratiche" style="--c:var(--teal)"><span class="dot"></span><span class="idx">07</span>Buone pratiche</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <!-- 00 CREARE -->
+    <section class="sect" id="creare" style="--c:var(--blue)">
+      <div class="sect-head"><span class="sect-idx">[00]</span><h2 class="sect-title">Creare, leggere e scrivere dati</h2></div>
+      <p class="sect-desc">Prima di poter analizzare qualcosa, i dati vanno portati dentro pandas: da una struttura Python, da un file su disco, o costruiti a mano per una prova.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">pd.DataFrame({'col': [...]})</div>
+          <div class="desc">Costruisce una tabella da un dizionario: ogni chiave diventa una colonna.</div>
+          <pre>pd.DataFrame({'Mele': [35, 41],
+              'Banane': [21, 34]})</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">pd.Series([...], index=...)</div>
+          <div class="desc">Costruisce una singola colonna: una sequenza di valori con un'etichetta per ciascuno.</div>
+          <pre>pd.Series([30, 35, 40],
+    index=['2020','2021','2022'],
+    name='Vendite')</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">pd.read_csv(percorso, index_col=0)</div>
+          <div class="desc">Legge un file CSV e restituisce un DataFrame. index_col=0 usa la prima colonna del file come indice, invece di numerare le righe da zero.</div>
+          <pre>reviews = pd.read_csv(
+    "winemag-data.csv", index_col=0)</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.shape / df.head(n)</div>
+          <div class="desc">Dimensioni della tabella (righe, colonne) e anteprima delle prime n righe — 5 di default.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.to_csv(percorso)</div>
+          <div class="desc">Scrive il DataFrame su disco in formato CSV.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 SELEZIONE -->
+    <section class="sect" id="selezione" style="--c:var(--teal)">
+      <div class="sect-head"><span class="sect-idx">[01]</span><h2 class="sect-title">Indicizzazione, selezione e assegnazione</h2></div>
+      <p class="sect-desc">Selezionare righe, colonne o singole celle è l'operazione più ripetuta di sempre: pandas offre più modi per farlo, ognuno con un caso d'uso preciso.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">df.colonna / df['colonna']</div>
+          <div class="desc">Accedono a una colonna come Series. La forma con parentesi quadre è obbligatoria se il nome contiene spazi o coincide con un metodo.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.iloc[righe, colonne]</div>
+          <div class="desc">Selezione per posizione numerica, come nelle liste Python — l'estremo finale è escluso.</div>
+          <pre>reviews.iloc[0]      <span class="r"># prima riga</span>
+reviews.iloc[:, 0]   <span class="r"># prima colonna</span>
+reviews.iloc[:5, 0]  <span class="r"># prime 5 righe</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.loc[righe, colonne]</div>
+          <div class="desc">Selezione per etichetta: indice e nomi delle colonne, non posizione — qui l'estremo finale è incluso.</div>
+          <pre>reviews.loc[0, 'country']
+reviews.loc[:, ['taster_name','points']]</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df[condizione] / df.loc[condizione]</div>
+          <div class="desc">Indicizzazione booleana: tiene solo le righe che soddisfano una condizione.</div>
+          <pre>reviews.loc[reviews.country == 'Italy']
+reviews.loc[(reviews.country == 'Italy')
+            & (reviews.points >= 90)]</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.colonna.isin([...])</div>
+          <div class="desc">True per i valori presenti nella lista: comodo per filtri con più opzioni insieme.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.set_index('colonna')</div>
+          <div class="desc">Sostituisce l'indice di default con i valori di una colonna già esistente.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">df['nuova'] = valore</span><span class="d">crea (o sovrascrive) una colonna assegnando uno scalare o una Series della stessa lunghezza</span></div>
+        <div class="row-item searchable"><span class="fn">df.colonna.notnull() / .isnull()</span><span class="d">combinate con loc per filtrare le righe con o senza valori mancanti (vedi sezione 04)</span></div>
+      </div>
+    </section>
+
+    <!-- 02 RIEPILOGO -->
+    <section class="sect" id="riepilogo" style="--c:var(--amber)">
+      <div class="sect-head"><span class="sect-idx">[02]</span><h2 class="sect-title">Funzioni di riepilogo e mappe</h2></div>
+      <p class="sect-desc">Prima regola quando si apre un dataset nuovo: guardarne la forma statistica. Le funzioni di riepilogo danno una fotografia rapida; map e apply trasformano i dati valore per valore o riga per riga.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">df.describe()</div>
+          <div class="desc">Statistiche riassuntive — conteggio, media, deviazione standard, quartili — per tutte le colonne numeriche in un colpo solo.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.colonna.mean/median/unique/value_counts()</div>
+          <div class="desc">Media, mediana, valori distinti e il relativo conteggio, calcolati su una singola colonna.</div>
+          <pre>reviews.taster_name.value_counts()</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.colonna.map(funzione)</div>
+          <div class="desc">Applica una funzione a ogni valore di una Series, restituendo una nuova Series della stessa lunghezza.</div>
+          <pre>media = reviews.points.mean()
+reviews.points.map(lambda p: p - media)</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.apply(funzione, axis='columns')</div>
+          <div class="desc">Applica una funzione a ogni riga (o colonna) del DataFrame; più flessibile di map, ma più lenta.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">df.colonna + valore</span><span class="d">le operazioni aritmetiche tra Series e scalari sono già vettorizzate: spesso non serve map/apply</span></div>
+        <div class="row-item searchable"><span class="fn">df.colonna.idxmax() / idxmin()</span><span class="d">indice (etichetta) in cui si trova il valore massimo o minimo</span></div>
+      </div>
+    </section>
+
+    <!-- 03 GRUPPI -->
+    <section class="sect" id="gruppi" style="--c:var(--violet)">
+      <div class="sect-head"><span class="sect-idx">[03]</span><h2 class="sect-title">Raggruppare e ordinare</h2></div>
+      <p class="sect-desc">groupby() è probabilmente la funzione più potente del corso: divide i dati in gruppi in base a una regola, applica un calcolo a ciascuno, e ricompone il risultato in una nuova tabella.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">df.groupby('colonna').colonna2.count()</div>
+          <div class="desc">Conta quante righe cadono in ciascun gruppo.</div>
+          <pre>reviews.groupby('points').points.count()</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.groupby('colonna').agg([len, min, max])</div>
+          <div class="desc">Applica più funzioni di aggregazione insieme, colonna per colonna, a ciascun gruppo.</div>
+          <pre>reviews.groupby('country').price.agg(
+    [len, min, max])</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.groupby(['col1', 'col2'])</div>
+          <div class="desc">Raggruppa su più colonne insieme, producendo un indice a più livelli (MultiIndex).</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.sort_values(by='colonna', ascending=True)</div>
+          <div class="desc">Ordina le righe in base ai valori di una colonna, non in base all'indice.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.sort_index()</div>
+          <div class="desc">Ordina le righe in base all'indice invece che a una colonna — utile dopo un groupby.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">df.groupby('col').apply(funzione)</span><span class="d">per logiche di aggregazione personalizzate, quando le funzioni predefinite non bastano</span></div>
+        <div class="row-item searchable"><span class="fn">sort_values(by=['col1','col2'])</span><span class="d">ordina su più colonne insieme, nell'ordine in cui sono elencate</span></div>
+      </div>
+    </section>
+
+    <!-- 04 TIPI -->
+    <section class="sect" id="tipi" style="--c:var(--rose)">
+      <div class="sect-head"><span class="sect-idx">[04]</span><h2 class="sect-title">Tipi di dati e valori mancanti</h2></div>
+      <p class="sect-desc">Sapere che tipo di dato contiene una colonna, e dove mancano dei valori, evita sorprese silenziose nei calcoli successivi.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">df.dtypes / df.colonna.dtype</div>
+          <div class="desc">Tipo di dato di ogni colonna del DataFrame, o di una singola colonna.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.colonna.astype('tipo')</div>
+          <div class="desc">Converte una colonna in un altro tipo, ad esempio da intero a virgola mobile.</div>
+          <pre>reviews.points.astype('float64')</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.colonna.isnull() / notnull()</div>
+          <div class="desc">True dove il valore è mancante (o dove non lo è). Usate spesso dentro loc per filtrare.</div>
+          <pre>reviews[reviews.country.isnull()]</pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.colonna.fillna(valore)</div>
+          <div class="desc">Sostituisce i valori mancanti con un valore scelto, ad esempio "Sconosciuto".</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.colonna.replace(vecchio, nuovo)</div>
+          <div class="desc">Sostituisce un valore specifico con un altro, indipendentemente dal fatto che sia mancante.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">df.dropna()</span><span class="d">rimuove le righe (o le colonne) che contengono almeno un valore mancante</span></div>
+      </div>
+    </section>
+
+    <!-- 05 COMBINARE -->
+    <section class="sect" id="combinare" style="--c:var(--lime)">
+      <div class="sect-head"><span class="sect-idx">[05]</span><h2 class="sect-title">Rinominare e combinare</h2></div>
+      <p class="sect-desc">I dati raramente arrivano già puliti da un'unica fonte: rinominare rende i nomi coerenti tra tabelle diverse, combinare le unisce in una sola.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">df.rename(columns={'vecchio': 'nuovo'})</div>
+          <div class="desc">Rinomina una o più colonne, passando un dizionario vecchio → nuovo.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df.rename_axis('nome', axis='rows')</div>
+          <div class="desc">Assegna un nome all'indice (o alle colonne): utile per documentare cosa rappresenta.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">pd.concat([df1, df2])</div>
+          <div class="desc">Impila più DataFrame (o Series) uno sotto l'altro, a patto che abbiano le stesse colonne.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">df1.join(df2, lsuffix='_a', rsuffix='_b')</div>
+          <div class="desc">Unisce due DataFrame in base all'indice; i suffissi risolvono i nomi di colonna duplicati.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">pd.merge(df1, df2, on='colonna')</span><span class="d">unisce due DataFrame in base al valore di una colonna comune, come una JOIN in SQL</span></div>
+      </div>
+    </section>
+
+    <!-- 06 CONCETTI -->
+    <section class="sect" id="concetti" style="--c:var(--blue)">
+      <div class="sect-head"><span class="sect-idx">[06]</span><h2 class="sect-title">Concetti chiave</h2></div>
+      <p class="sect-desc">Tre idee che, capite bene una volta, tolgono la maggior parte della confusione iniziale con pandas.</p>
+
+      <div class="callout searchable">
+        <h3>L'indice è un'etichetta, non un numero di riga</h3>
+        <p>Il numero a sinistra di ogni riga è l'indice, non una posizione fissa: dopo un filtro o un sort_values() gli indici restano quelli originali e possono comparire fuori ordine. df.loc[] lavora su queste etichette; df.iloc[] lavora sempre sulla posizione, indipendentemente da come è fatto l'indice. df.reset_index() rinumera da capo quando serve un indice pulito.</p>
+      </div>
+
+      <div class="callout searchable">
+        <h3>Vista o copia? Il SettingWithCopyWarning</h3>
+        <p>Selezionare un sottoinsieme di un DataFrame a volte restituisce una vista, a volte una copia: pandas non lo garantisce in modo prevedibile, e modificare il risultato può generare un avviso, oppure non modificare nulla. La forma sicura è assegnare in un solo passaggio con loc, invece di incatenare due selezioni.</p>
+        <pre>reviews[reviews.country=='Italy']['points'] = 100  <span class="bad"># rischioso</span>
+reviews.loc[reviews.country=='Italy', 'points'] = 100  <span class="ok"># corretto</span></pre>
+      </div>
+
+      <div class="callout searchable">
+        <h3>Method chaining: una catena leggibile</h3>
+        <p>pandas è pensato per incatenare metodi uno dopo l'altro, ma scritta su una riga sola una catena diventa illeggibile in fretta. Racchiudere l'espressione tra parentesi tonde permette di andare a capo prima di ogni punto, mantenendo visibile l'ordine dei passaggi.</p>
+        <pre>(
+    reviews
+    .loc[reviews.country == 'Italy']
+    .groupby('province')
+    .points.mean()
+    .sort_values(ascending=False)
+)</pre>
+      </div>
+    </section>
+
+    <!-- 07 PRATICHE -->
+    <section class="sect" id="pratiche" style="--c:var(--teal)">
+      <div class="sect-head"><span class="sect-idx">[07]</span><h2 class="sect-title">Buone pratiche di scrittura</h2></div>
+      <p class="sect-desc">Come scrivere codice pandas che resta leggibile anche dopo una settimana che non lo si riapre.</p>
+
+      <div class="tips">
+        <div class="tip searchable"><span class="n">→</span><p><strong>Vai a capo nelle catene di metodi.</strong> Racchiudi l'espressione tra parentesi e metti un metodo per riga: si legge come una sequenza di passaggi ed è più facile da confrontare riga per riga in git.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>Preferisci le operazioni vettorizzate a map/apply con funzioni lente.</strong> reviews.points - reviews.points.mean() è più veloce e più chiaro di un apply con lambda quando esiste già un operatore o un metodo dedicato.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>Assegna sempre con .loc, mai con indicizzazione incatenata.</strong> df[cond]['col'] = valore può fallire in silenzio; df.loc[cond, 'col'] = valore è l'unica forma affidabile.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>Controlla dtypes e valori mancanti appena carichi un dataset.</strong> df.info() insieme a df.isnull().sum() prima di qualunque analisi evita di scoprire i problemi a metà notebook.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>Copia esplicitamente quando serve.</strong> Se stai per modificare un sottoinsieme di dati che vuoi tenere separato dall'originale, usa .copy() invece di sperare che la selezione non fosse una vista.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>Dai nomi descrittivi ai DataFrame intermedi.</strong> df1, df2, tmp rendono una catena di trasformazioni difficile da rileggere; italian_wines o top_rated si spiegano da soli.</p></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Guida pensata per accompagnare il corso gratuito <a href="https://www.kaggle.com/learn/pandas" target="_blank" rel="noopener">Pandas su Kaggle Learn</a>. Per i dettagli completi e i casi limite, la <a href="https://pandas.pydata.org/docs/" target="_blank" rel="noopener">documentazione ufficiale</a> resta il riferimento definitivo.
+</footer>
+
+<script>
+  const searchables = document.querySelectorAll('.searchable');
+  searchables.forEach(el => { el.dataset.search = el.textContent.toLowerCase(); });
+
+  const sections = document.querySelectorAll('.sect');
+  const searchInput = document.getElementById('search');
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    searchables.forEach(el => {
+      const match = !q || el.dataset.search.includes(q);
+      el.classList.toggle('hidden', !match);
+    });
+    sections.forEach(sec => {
+      const anyVisible = sec.querySelector('.searchable:not(.hidden)');
+      const empty = q && !anyVisible;
+      sec.classList.toggle('hidden', empty);
+      const link = document.querySelector('.toc a[href="#' + sec.id + '"]');
+      if (link) link.classList.toggle('hidden', empty);
+    });
+  });
+
+  const tocLinks = document.querySelectorAll('.toc a');
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector('.toc a[href="#' + entry.target.id + '"]');
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  sections.forEach(sec => spy.observe(sec));
+</script>
+
+</body>
+</html>

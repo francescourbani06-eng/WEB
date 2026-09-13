@@ -1,1 +1,10 @@
-print("funziona")
+import numpy as np
+
+a = np.array([
+    [12, 15, 18, 21],
+    [24, 27, 30, 33],
+    [36, 39, 42, 45]
+])
+
+
+print()

@@ -1,0 +1,4 @@
+Per fare un nuovo commit:       git add .
+                                git commit -m "descrizione della modifica"
+                                git push
+

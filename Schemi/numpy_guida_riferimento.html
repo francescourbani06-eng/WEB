@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NumPy — Guida di riferimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1620;
+    --panel:#141d27;
+    --panel-2:#1a2530;
+    --border:#263340;
+    --text:#e8edf3;
+    --text-dim:#93a6b7;
+    --text-faint:#5b6d7f;
+    --blue:#5fb4d9;
+    --amber:#e0a458;
+    --teal:#4fbfa8;
+    --violet:#a394e0;
+    --rose:#d98bab;
+    --lime:#a9c15c;
+    --sans:'IBM Plex Sans', -apple-system, Segoe UI, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  h1,h2,h3{font-family:var(--sans);}
+  code{font-family:var(--mono);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(95,180,217,0.10), transparent 55%),
+      var(--bg);
+    border-bottom:1px solid var(--border);
+  }
+  .hero-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:56px 32px 44px;
+    display:flex;
+    gap:48px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .hero-text{flex:1 1 380px;}
+  .kicker{
+    font-family:var(--mono);
+    font-size:.85rem;
+    color:var(--blue);
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:2.1rem;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin:0 0 14px;
+  }
+  .hero p{
+    color:var(--text-dim);
+    max-width:54ch;
+    font-size:.98rem;
+    margin:0 0 10px;
+  }
+  .hero .hint{
+    font-size:.85rem;
+    color:var(--text-faint);
+  }
+  .hero .hint code{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:1px 6px;
+    color:var(--text-dim);
+  }
+  .hero-diagram{flex:0 0 auto; text-align:center;}
+  .hero-diagram svg{display:block; max-width:100%; height:auto;}
+  .legend{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+    font-family:var(--mono);
+    font-size:.75rem;
+    color:var(--text-faint);
+  }
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .legend i{width:9px; height:9px; border-radius:2px; display:inline-block;}
+
+  /* ---------- LAYOUT ---------- */
+  .page{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px 100px;
+    display:grid;
+    grid-template-columns:230px 1fr;
+    gap:52px;
+  }
+  .toc{
+    position:sticky;
+    top:20px;
+    align-self:start;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    max-height:calc(100vh - 40px);
+    overflow-y:auto;
+    padding-top:32px;
+  }
+  #search{
+    font-family:var(--sans);
+    font-size:.85rem;
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:5px;
+    padding:9px 11px;
+    margin-bottom:14px;
+    outline:none;
+  }
+  #search::placeholder{color:var(--text-faint);}
+  #search:focus{border-color:var(--blue);}
+  .toc a{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    text-decoration:none;
+    color:var(--text-dim);
+    font-size:.83rem;
+    padding:6px 9px;
+    border-left:2px solid transparent;
+    border-radius:0 4px 4px 0;
+  }
+  .toc a .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--c);
+    flex:0 0 auto;
+  }
+  .toc a .idx{
+    font-family:var(--mono);
+    color:var(--text-faint);
+    font-size:.75rem;
+  }
+  .toc a:hover{color:var(--text); background:var(--panel);}
+  .toc a.active{color:var(--text); border-left-color:var(--c); background:var(--panel);}
+  .toc a:focus-visible, #search:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+
+  main{min-width:0;}
+  .sect{
+    border-left:3px solid var(--c);
+    border-top:1px solid var(--border);
+    padding:36px 0 36px 22px;
+  }
+  .sect:first-child{border-top:none; padding-top:32px;}
+  .sect-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .sect-idx{font-family:var(--mono); color:var(--text-faint); font-size:.85rem;}
+  .sect-title{font-size:1.35rem; font-weight:600; margin:0;}
+  .sect-desc{color:var(--text-dim); max-width:66ch; font-size:.92rem; margin:10px 0 24px;}
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(270px,1fr));
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:14px 15px;
+  }
+  .card .sig{
+    font-family:var(--mono);
+    font-size:.9rem;
+    font-weight:600;
+    color:var(--text);
+    word-break:break-word;
+  }
+  .card .desc{
+    font-size:.85rem;
+    color:var(--text-dim);
+    margin:7px 0 10px;
+  }
+  .card .note{
+    font-size:.78rem;
+    color:var(--text-faint);
+    margin:8px 0 0;
+  }
+  .card pre{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:9px 10px;
+    margin:0;
+    font-family:var(--mono);
+    font-size:.76rem;
+    color:var(--text-dim);
+    overflow-x:auto;
+    line-height:1.55;
+  }
+  .card pre .r{color:var(--text-faint);}
+
+  .rows{
+    border:1px solid var(--border);
+    border-radius:5px;
+    overflow:hidden;
+    margin-bottom:6px;
+  }
+  .row-item{
+    display:flex;
+    gap:16px;
+    padding:9px 15px;
+    font-size:.84rem;
+    border-top:1px solid var(--border);
+    background:var(--panel);
+  }
+  .row-item:first-child{border-top:none;}
+  .row-item .fn{
+    font-family:var(--mono);
+    color:var(--text);
+    min-width:210px;
+    flex-shrink:0;
+  }
+  .row-item .d{color:var(--text-dim);}
+
+  table.prop{
+    width:100%;
+    border-collapse:collapse;
+    font-size:.86rem;
+    border:1px solid var(--border);
+    border-radius:5px;
+    overflow:hidden;
+  }
+  table.prop td{padding:10px 14px; border-top:1px solid var(--border);}
+  table.prop tr:first-child td{border-top:none;}
+  table.prop td.name{font-family:var(--mono); color:var(--blue); width:150px;}
+  table.prop td.desc{color:var(--text-dim);}
+
+  .callout{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .callout h3{margin:0 0 8px; font-size:1rem;}
+  .callout p{margin:0; color:var(--text-dim); font-size:.87rem; max-width:70ch;}
+  .callout .mini-diagram{margin-top:16px;}
+
+  .tips{display:grid; gap:10px;}
+  .tip{
+    display:flex;
+    gap:13px;
+    padding:13px 15px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:5px;
+  }
+  .tip .n{font-family:var(--mono); color:var(--text-faint); flex:0 0 auto;}
+  .tip p{margin:0; color:var(--text-dim); font-size:.87rem;}
+
+  .hidden{display:none !important;}
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 32px 60px;
+    color:var(--text-faint);
+    font-size:.8rem;
+    border-top:1px solid var(--border);
+  }
+  footer a{color:var(--text-dim); text-decoration:underline;}
+
+  @media (max-width:860px){
+    .page{grid-template-columns:1fr; gap:0;}
+    .toc{
+      position:static;
+      flex-direction:row;
+      flex-wrap:wrap;
+      max-height:none;
+      overflow:visible;
+      padding-top:24px;
+      margin-bottom:8px;
+      gap:4px;
+    }
+    .toc a{font-size:.78rem; padding:5px 8px;}
+    #search{width:100%; margin-bottom:10px;}
+    .hero-inner{padding:40px 20px 32px;}
+    .page{padding:0 20px 80px;}
+    .sect{padding-left:16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <p class="kicker">import numpy as np</p>
+      <h1>Guida di riferimento a NumPy</h1>
+      <p>Le funzioni che ricorrono più spesso, raggruppate per quello che fanno: creare array, ispezionarli, tagliarli, trasformarli, farci i conti sopra. Pensata per essere consultata al bisogno, non letta tutta d'un fiato.</p>
+      <p class="hint">Usa il campo di ricerca nel menu a sinistra per saltare dritto a <code>reshape</code>, <code>where</code>, <code>argsort</code>...</p>
+    </div>
+    <div class="hero-diagram">
+      <svg viewBox="0 0 420 300" width="360" role="img" aria-label="Matrice 3 righe per 4 colonne con riga 1 e colonna 2 evidenziate">
+        <text x="150" y="26" font-family="IBM Plex Mono" font-size="12" fill="#5b6d7f">axis=1 (colonne) →</text>
+        <text x="18" y="150" font-family="IBM Plex Mono" font-size="12" fill="#5b6d7f" transform="rotate(-90 18,150)">axis=0 (righe) ↓</text>
+
+        <!-- column index labels -->
+        <text x="99"  y="52" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">0</text>
+        <text x="177" y="52" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">1</text>
+        <text x="255" y="52" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">2</text>
+        <text x="333" y="52" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">3</text>
+        <!-- row index labels -->
+        <text x="52" y="102" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">0</text>
+        <text x="52" y="174" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">1</text>
+        <text x="52" y="246" font-family="IBM Plex Mono" font-size="11" fill="#5b6d7f" text-anchor="middle">2</text>
+
+        <!-- row 0 -->
+        <rect x="70"  y="70" width="70" height="64" rx="4" fill="#1a2530" stroke="#263340"/>
+        <rect x="148" y="70" width="70" height="64" rx="4" fill="#1a2530" stroke="#263340"/>
+        <rect x="226" y="70" width="70" height="64" rx="4" fill="rgba(79,191,168,0.16)" stroke="#4fbfa8"/>
+        <rect x="304" y="70" width="70" height="64" rx="4" fill="#1a2530" stroke="#263340"/>
+        <text x="105" y="108" font-family="IBM Plex Mono" font-size="15" fill="#93a6b7" text-anchor="middle">0</text>
+        <text x="183" y="108" font-family="IBM Plex Mono" font-size="15" fill="#93a6b7" text-anchor="middle">1</text>
+        <text x="261" y="108" font-family="IBM Plex Mono" font-size="15" fill="#4fbfa8" text-anchor="middle">2</text>
+        <text x="339" y="108" font-family="IBM Plex Mono" font-size="15" fill="#93a6b7" text-anchor="middle">3</text>
+
+        <!-- row 1 (highlighted row) -->
+        <rect x="70"  y="142" width="70" height="64" rx="4" fill="rgba(224,164,88,0.16)" stroke="#e0a458"/>
+        <rect x="148" y="142" width="70" height="64" rx="4" fill="rgba(224,164,88,0.16)" stroke="#e0a458"/>
+        <rect x="226" y="142" width="70" height="64" rx="4" fill="rgba(95,180,217,0.30)" stroke="#5fb4d9" stroke-width="2"/>
+        <rect x="304" y="142" width="70" height="64" rx="4" fill="rgba(224,164,88,0.16)" stroke="#e0a458"/>
+        <text x="105" y="180" font-family="IBM Plex Mono" font-size="15" fill="#e0a458" text-anchor="middle">4</text>
+        <text x="183" y="180" font-family="IBM Plex Mono" font-size="15" fill="#e0a458" text-anchor="middle">5</text>
+        <text x="261" y="180" font-family="IBM Plex Mono" font-size="15" fill="#e8edf3" text-anchor="middle" font-weight="600">6</text>
+        <text x="339" y="180" font-family="IBM Plex Mono" font-size="15" fill="#e0a458" text-anchor="middle">7</text>
+
+        <!-- row 2 -->
+        <rect x="70"  y="214" width="70" height="64" rx="4" fill="#1a2530" stroke="#263340"/>
+        <rect x="148" y="214" width="70" height="64" rx="4" fill="#1a2530" stroke="#263340"/>
+        <rect x="226" y="214" width="70" height="64" rx="4" fill="rgba(79,191,168,0.16)" stroke="#4fbfa8"/>
+        <rect x="304" y="214" width="70" height="64" rx="4" fill="#1a2530" stroke="#263340"/>
+        <text x="105" y="252" font-family="IBM Plex Mono" font-size="15" fill="#93a6b7" text-anchor="middle">8</text>
+        <text x="183" y="252" font-family="IBM Plex Mono" font-size="15" fill="#93a6b7" text-anchor="middle">9</text>
+        <text x="261" y="252" font-family="IBM Plex Mono" font-size="15" fill="#4fbfa8" text-anchor="middle">10</text>
+        <text x="339" y="252" font-family="IBM Plex Mono" font-size="15" fill="#93a6b7" text-anchor="middle">11</text>
+      </svg>
+      <div class="legend">
+        <span><i style="background:#e0a458"></i>m[1, :]</span>
+        <span><i style="background:#4fbfa8"></i>m[:, 2]</span>
+        <span><i style="background:#5fb4d9"></i>m[1, 2]</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <aside class="toc">
+    <input id="search" type="search" placeholder="Cerca una funzione…" autocomplete="off">
+    <nav>
+      <a href="#creazione" style="--c:var(--blue)"><span class="dot"></span><span class="idx">00</span>Creazione array</a>
+      <a href="#proprieta" style="--c:var(--teal)"><span class="dot"></span><span class="idx">01</span>Proprietà</a>
+      <a href="#indicizzazione" style="--c:var(--amber)"><span class="dot"></span><span class="idx">02</span>Indicizzazione</a>
+      <a href="#forma" style="--c:var(--violet)"><span class="dot"></span><span class="idx">03</span>Forma</a>
+      <a href="#matematica" style="--c:var(--rose)"><span class="dot"></span><span class="idx">04</span>Matematica</a>
+      <a href="#statistiche" style="--c:var(--lime)"><span class="dot"></span><span class="idx">05</span>Statistiche</a>
+      <a href="#algebra" style="--c:var(--blue)"><span class="dot"></span><span class="idx">06</span>Algebra lineare</a>
+      <a href="#concetti" style="--c:var(--teal)"><span class="dot"></span><span class="idx">07</span>Axis &amp; broadcasting</a>
+      <a href="#logica" style="--c:var(--amber)"><span class="dot"></span><span class="idx">08</span>Confronti e logica</a>
+      <a href="#ordinamento" style="--c:var(--violet)"><span class="dot"></span><span class="idx">09</span>Ordinamento</a>
+      <a href="#casuali" style="--c:var(--rose)"><span class="dot"></span><span class="idx">10</span>Numeri casuali</a>
+      <a href="#io" style="--c:var(--lime)"><span class="dot"></span><span class="idx">11</span>Input/Output</a>
+      <a href="#note" style="--c:var(--blue)"><span class="dot"></span><span class="idx">12</span>Note pratiche</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <!-- 00 CREAZIONE -->
+    <section class="sect" id="creazione" style="--c:var(--blue)">
+      <div class="sect-head"><span class="sect-idx">[00]</span><h2 class="sect-title">Creazione di array</h2></div>
+      <p class="sect-desc">Il punto di partenza di ogni script: costruire un array a partire da dati esistenti, oppure generarlo da zero con una forma e un contenuto scelti.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">np.array(oggetto, dtype=None)</div>
+          <div class="desc">Converte una lista, tupla o sequenza annidata in un ndarray.</div>
+          <pre>a = np.array([1, 2, 3])
+b = np.array([[1, 2], [3, 4]])
+<span class="r"># b.shape → (2, 2)</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.zeros(shape) / np.ones(shape)</div>
+          <div class="desc">Array pre-riempiti di zeri o di uno: comodi come contenitori iniziali.</div>
+          <pre>np.zeros((2, 3))
+<span class="r"># array([[0., 0., 0.],
+#        [0., 0., 0.]])</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.full(shape, valore)</div>
+          <div class="desc">Array riempito con un valore costante a scelta.</div>
+          <pre>np.full((2, 2), 7)
+<span class="r"># array([[7, 7],
+#        [7, 7]])</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.eye(n)</div>
+          <div class="desc">Matrice identità n×n, con 1 sulla diagonale principale.</div>
+          <pre>np.eye(3)
+<span class="r"># array([[1., 0., 0.],
+#        [0., 1., 0.],
+#        [0., 0., 1.]])</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.arange(inizio, fine, passo)</div>
+          <div class="desc">Sequenza con passo fisso, come range() ma restituisce un array.</div>
+          <pre>np.arange(0, 10, 2)
+<span class="r"># array([0, 2, 4, 6, 8])</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.linspace(inizio, fine, num)</div>
+          <div class="desc">num punti equidistanti tra inizio e fine, estremi inclusi.</div>
+          <pre>np.linspace(0, 1, 5)
+<span class="r"># array([0., 0.25, 0.5, 0.75, 1.])</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.empty(shape)</div>
+          <div class="desc">Alloca memoria senza inizializzarla: più veloce di zeros(), ma contiene valori casuali residui.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.zeros_like(a)</span><span class="d">stessa forma e dtype di a, riempito di zeri (esistono anche ones_like e full_like)</span></div>
+        <div class="row-item searchable"><span class="fn">a.copy()</span><span class="d">copia indipendente dei dati, non una vista</span></div>
+        <div class="row-item searchable"><span class="fn">np.diag(v)</span><span class="d">crea una matrice diagonale da un vettore, o estrae la diagonale da una matrice</span></div>
+        <div class="row-item searchable"><span class="fn">np.identity(n)</span><span class="d">equivalente a np.eye(n) senza offset</span></div>
+        <div class="row-item searchable"><span class="fn">np.fromfunction(f, shape)</span><span class="d">costruisce un array applicando una funzione alle coordinate di ogni cella</span></div>
+      </div>
+    </section>
+
+    <!-- 01 PROPRIETA -->
+    <section class="sect" id="proprieta" style="--c:var(--teal)">
+      <div class="sect-head"><span class="sect-idx">[01]</span><h2 class="sect-title">Proprietà e attributi</h2></div>
+      <p class="sect-desc">Ogni ndarray porta con sé dei metadati che ne descrivono la struttura: sono il primo posto dove guardare quando si eredita un array scritto da altri.</p>
+
+      <table class="prop">
+        <tbody>
+          <tr class="searchable"><td class="name">a.shape</td><td class="desc">tupla con le dimensioni: (righe, colonne, ...)</td></tr>
+          <tr class="searchable"><td class="name">a.ndim</td><td class="desc">numero di dimensioni (assi) dell'array</td></tr>
+          <tr class="searchable"><td class="name">a.size</td><td class="desc">numero totale di elementi</td></tr>
+          <tr class="searchable"><td class="name">a.dtype</td><td class="desc">tipo di dato degli elementi (int64, float32, bool, ...)</td></tr>
+          <tr class="searchable"><td class="name">a.itemsize</td><td class="desc">byte occupati da ogni singolo elemento</td></tr>
+          <tr class="searchable"><td class="name">a.nbytes</td><td class="desc">byte totali occupati dall'array (size × itemsize)</td></tr>
+          <tr class="searchable"><td class="name">a.T</td><td class="desc">vista trasposta dell'array</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 02 INDICIZZAZIONE -->
+    <section class="sect" id="indicizzazione" style="--c:var(--amber)">
+      <div class="sect-head"><span class="sect-idx">[02]</span><h2 class="sect-title">Indicizzazione e slicing</h2></div>
+      <p class="sect-desc">Estrarre porzioni di dati è probabilmente l'operazione più frequente. NumPy estende lo slicing di Python a N dimensioni, e aggiunge indicizzazione booleana e fancy indexing.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">a[inizio:fine:passo]</div>
+          <div class="desc">Slicing base, identico nella sintassi a quello delle liste Python.</div>
+          <pre>a = np.arange(10)
+a[2:7:2]   <span class="r"># array([2, 4, 6])</span>
+a[::-1]    <span class="r"># inverte l'array</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">m[righe, colonne]</div>
+          <div class="desc">Slicing multidimensionale: un indice o slice per ogni asse, separati da virgola.</div>
+          <pre>m = np.arange(12).reshape(3, 4)
+m[1, :]     <span class="r"># seconda riga</span>
+m[:, 2]     <span class="r"># terza colonna</span>
+m[:2, 1:3]  <span class="r"># sotto-blocco</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a[condizione]</div>
+          <div class="desc">Indicizzazione booleana: seleziona solo gli elementi che soddisfano la condizione.</div>
+          <pre>a[a > 5]
+<span class="r"># solo i valori maggiori di 5</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a[[i, j, k]]</div>
+          <div class="desc">Fancy indexing: seleziona elementi da una lista arbitraria di indici.</div>
+          <pre>a[[0, 2, 4]]
+<span class="r"># elementi agli indici 0, 2, 4</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.where(cond, x, y)</div>
+          <div class="desc">Restituisce x dove la condizione è vera, y altrove; senza x e y restituisce gli indici veri.</div>
+          <pre>np.where(a > 5, a, 0)
+<span class="r"># mantiene a dove &gt; 5, azzera il resto</span></pre>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">a.take(indici)</span><span class="d">come il fancy indexing, ma accetta anche un iterabile</span></div>
+        <div class="row-item searchable"><span class="fn">np.select(cond, scelte)</span><span class="d">scelta multipla vettorizzata, l'equivalente di if/elif/elif...</span></div>
+        <div class="row-item searchable"><span class="fn">a.diagonal()</span><span class="d">estrae la diagonale principale</span></div>
+        <div class="row-item searchable"><span class="fn">np.compress(cond, a)</span><span class="d">filtra un array lungo un asse in base a una condizione</span></div>
+      </div>
+    </section>
+
+    <!-- 03 FORMA -->
+    <section class="sect" id="forma" style="--c:var(--violet)">
+      <div class="sect-head"><span class="sect-idx">[03]</span><h2 class="sect-title">Manipolazione della forma</h2></div>
+      <p class="sect-desc">Cambiare la forma di un array non ne cambia i dati sottostanti: la maggior parte di queste funzioni restituisce una vista, non una copia.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">a.reshape(nuova_forma)</div>
+          <div class="desc">Riorganizza gli elementi in una nuova forma con lo stesso numero totale di valori. Usa -1 per far calcolare una dimensione automaticamente.</div>
+          <pre>np.arange(6).reshape(2, 3)
+np.arange(6).reshape(-1, 1)
+<span class="r"># -1 → NumPy calcola la dimensione</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a.ravel() / a.flatten()</div>
+          <div class="desc">Appiattiscono l'array a una dimensione: ravel() restituisce una vista quando può, flatten() restituisce sempre una copia.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a.transpose() / a.T</div>
+          <div class="desc">Scambia gli assi; su una matrice 2D inverte righe e colonne.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.concatenate([a, b], axis=0)</div>
+          <div class="desc">Unisce più array lungo un asse che esiste già in entrambi.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.stack / vstack / hstack</div>
+          <div class="desc">stack crea un asse nuovo; vstack e hstack impilano rispettivamente in verticale e in orizzontale.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.split(a, n) / hsplit / vsplit</div>
+          <div class="desc">Divide un array in n parti uguali lungo un asse.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.expand_dims / np.squeeze</div>
+          <div class="desc">Aggiunge o rimuove assi di lunghezza 1: torna utile per far quadrare le forme nel broadcasting.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.tile(a, reps)</span><span class="d">ripete l'intero array un certo numero di volte</span></div>
+        <div class="row-item searchable"><span class="fn">np.repeat(a, n)</span><span class="d">ripete ogni singolo elemento n volte</span></div>
+        <div class="row-item searchable"><span class="fn">np.roll(a, shift)</span><span class="d">trasla ciclicamente gli elementi lungo un asse</span></div>
+        <div class="row-item searchable"><span class="fn">np.flip(a, axis)</span><span class="d">inverte l'ordine degli elementi lungo un asse</span></div>
+        <div class="row-item searchable"><span class="fn">np.pad(a, width)</span><span class="d">aggiunge un bordo (di default zeri) intorno all'array</span></div>
+      </div>
+    </section>
+
+    <!-- 04 MATEMATICA -->
+    <section class="sect" id="matematica" style="--c:var(--rose)">
+      <div class="sect-head"><span class="sect-idx">[04]</span><h2 class="sect-title">Operazioni matematiche</h2></div>
+      <p class="sect-desc">Le funzioni matematiche di NumPy lavorano elemento per elemento (elementwise) su interi array, senza bisogno di cicli espliciti.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">+  -  *  /  **</div>
+          <div class="desc">Operatori aritmetici standard, applicati elemento per elemento. Attenzione: * non è il prodotto matriciale.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.sqrt(a) / np.exp(a) / np.log(a)</div>
+          <div class="desc">Radice quadrata, esponenziale e logaritmo naturale, elemento per elemento.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.abs(a) / np.round(a, n)</div>
+          <div class="desc">Valore assoluto e arrotondamento a n cifre decimali.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.floor(a) / np.ceil(a)</div>
+          <div class="desc">Arrotondamento verso il basso e verso l'alto.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.clip(a, min, max)</div>
+          <div class="desc">Limita i valori dell'array entro l'intervallo [min, max].</div>
+          <pre>np.clip([-2, 5, 12], 0, 10)
+<span class="r"># array([0, 5, 10])</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.sin / np.cos / np.tan</div>
+          <div class="desc">Funzioni trigonometriche, argomenti espressi in radianti.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.power(a, n) / np.mod(a, n)</span><span class="d">potenza e resto della divisione</span></div>
+        <div class="row-item searchable"><span class="fn">np.sign(a)</span><span class="d">segno di ogni elemento: -1, 0 oppure 1</span></div>
+        <div class="row-item searchable"><span class="fn">np.log2(a) / np.log10(a)</span><span class="d">logaritmi in base 2 e in base 10</span></div>
+        <div class="row-item searchable"><span class="fn">np.maximum(a, b) / np.minimum(a, b)</span><span class="d">massimo/minimo elemento per elemento fra due array</span></div>
+      </div>
+    </section>
+
+    <!-- 05 STATISTICHE -->
+    <section class="sect" id="statistiche" style="--c:var(--lime)">
+      <div class="sect-head"><span class="sect-idx">[05]</span><h2 class="sect-title">Statistiche e aggregazioni</h2></div>
+      <p class="sect-desc">Riducono un array a un singolo valore, oppure a un array di dimensione inferiore, lungo uno o più assi.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">a.sum(axis=None) / a.mean(axis=None)</div>
+          <div class="desc">Somma e media, sull'intero array oppure lungo un asse specifico.</div>
+          <pre>m = np.arange(6).reshape(2, 3)
+m.sum()        <span class="r"># 15, totale</span>
+m.sum(axis=0)  <span class="r"># [3, 5, 7]  → per colonna</span>
+m.sum(axis=1)  <span class="r"># [3, 12]    → per riga</span></pre>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a.std() / a.var()</div>
+          <div class="desc">Deviazione standard e varianza.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a.min/max() e a.argmin/argmax()</div>
+          <div class="desc">Valore minimo/massimo e indice a cui si trova.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.median(a) / np.percentile(a, q)</div>
+          <div class="desc">Mediana e q-esimo percentile.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a.cumsum() / a.cumprod()</div>
+          <div class="desc">Somma e prodotto cumulativi elemento dopo elemento.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.average(a, weights=w)</span><span class="d">media pesata</span></div>
+        <div class="row-item searchable"><span class="fn">np.ptp(a)</span><span class="d">differenza tra massimo e minimo (peak to peak)</span></div>
+        <div class="row-item searchable"><span class="fn">np.corrcoef(a, b)</span><span class="d">matrice di correlazione</span></div>
+        <div class="row-item searchable"><span class="fn">np.histogram(a, bins)</span><span class="d">istogramma: conteggi per intervallo di valori</span></div>
+      </div>
+    </section>
+
+    <!-- 06 ALGEBRA -->
+    <section class="sect" id="algebra" style="--c:var(--blue)">
+      <div class="sect-head"><span class="sect-idx">[06]</span><h2 class="sect-title">Algebra lineare — np.linalg</h2></div>
+      <p class="sect-desc">Il modulo np.linalg copre le operazioni matriciali classiche: prodotti, inversioni, autovalori, sistemi lineari.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">a @ b / np.dot(a, b)</div>
+          <div class="desc">Prodotto matriciale. @ è l'operatore dedicato: ricorda che * resta elementwise.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.linalg.inv(a)</div>
+          <div class="desc">Matrice inversa; richiede una matrice quadrata non singolare.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.linalg.det(a)</div>
+          <div class="desc">Determinante della matrice.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.linalg.solve(a, b)</div>
+          <div class="desc">Risolve il sistema lineare a·x = b: più stabile e più veloce di inv(a) @ b.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.linalg.eig(a)</div>
+          <div class="desc">Autovalori e autovettori della matrice.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.linalg.norm(a)</div>
+          <div class="desc">Norma del vettore o della matrice; di default la norma euclidea (L2).</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.linalg.matrix_rank(a)</span><span class="d">rango della matrice</span></div>
+        <div class="row-item searchable"><span class="fn">np.linalg.qr(a) / np.linalg.svd(a)</span><span class="d">decomposizioni QR e SVD</span></div>
+        <div class="row-item searchable"><span class="fn">np.trace(a)</span><span class="d">somma degli elementi sulla diagonale principale</span></div>
+      </div>
+    </section>
+
+    <!-- 07 CONCETTI CHIAVE -->
+    <section class="sect" id="concetti" style="--c:var(--teal)">
+      <div class="sect-head"><span class="sect-idx">[07]</span><h2 class="sect-title">Axis e broadcasting</h2></div>
+      <p class="sect-desc">Le due idee che, una volta capite bene, rendono NumPy intuitivo invece che criptico. Vale la pena fissarle prima di tutto il resto.</p>
+
+      <div class="callout searchable">
+        <h3>L'asse indica cosa collassa, non dove "scorre"</h3>
+        <p>axis è la direzione lungo cui un'operazione riduce i dati. axis=0 collassa le righe, e il risultato ha un valore per ogni colonna; axis=1 collassa le colonne, e il risultato ha un valore per ogni riga. È l'errore più comune per chi inizia: pensare che axis=0 significhi "lungo le righe" nel senso di "risultato per riga".</p>
+      </div>
+
+      <div class="callout searchable">
+        <h3>Broadcasting: allineare forme diverse senza cicli</h3>
+        <p>Quando le forme di due array non coincidono, NumPy prova ad allinearle automaticamente partendo dall'ultima dimensione: una coppia di dimensioni è compatibile se sono uguali, oppure se una delle due vale 1 (in quel caso viene "estesa" virtualmente). Non serve espandere manualmente gli array con un ciclo.</p>
+        <pre>a = np.ones((3, 4))
+b = np.array([1, 2, 3, 4])  <span class="r"># shape (4,)</span>
+a + b  <span class="r"># b viene applicato a ogni riga → shape (3, 4)</span></pre>
+      </div>
+    </section>
+
+    <!-- 08 LOGICA -->
+    <section class="sect" id="logica" style="--c:var(--amber)">
+      <div class="sect-head"><span class="sect-idx">[08]</span><h2 class="sect-title">Confronti e logica</h2></div>
+      <p class="sect-desc">Confronti e operatori logici restituiscono array booleani: sono la base per il filtraggio e il mascheramento dei dati visto nella sezione sull'indicizzazione.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">==  !=  &gt;  &lt;  &gt;=  &lt;=</div>
+          <div class="desc">Confronti applicati elemento per elemento: restituiscono un array di bool.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.logical_and / or / not</div>
+          <div class="desc">Combinano condizioni booleane. and/or di Python non funzionano su array: servono queste.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">a.any() / a.all()</div>
+          <div class="desc">True se almeno un elemento, o se tutti gli elementi, soddisfano la condizione.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.isnan(a) / np.isinf(a)</div>
+          <div class="desc">Individuano valori NaN o infiniti: utile controllarli prima di un'aggregazione.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.array_equal(a, b)</div>
+          <div class="desc">Confronta due interi array per uguaglianza (forma e valori).</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.isclose / np.allclose</span><span class="d">confronto con tolleranza, indispensabile quando si lavora con i float</span></div>
+        <div class="row-item searchable"><span class="fn">&amp;  |  ~</span><span class="d">versioni bitwise di and/or/not sugli array booleani — servono le parentesi: (a&gt;1) &amp; (a&lt;5)</span></div>
+      </div>
+    </section>
+
+    <!-- 09 ORDINAMENTO -->
+    <section class="sect" id="ordinamento" style="--c:var(--violet)">
+      <div class="sect-head"><span class="sect-idx">[09]</span><h2 class="sect-title">Ordinamento e ricerca</h2></div>
+      <p class="sect-desc">Ordinare e cercare valori, mantenendo traccia degli indici originali quando serve ricollegare il risultato ad altri array.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">np.sort(a) / a.sort()</div>
+          <div class="desc">np.sort restituisce una copia ordinata; a.sort() ordina sul posto (in-place).</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.argsort(a)</div>
+          <div class="desc">Restituisce gli indici che ordinerebbero l'array: utile per ordinare più array in parallelo.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.unique(a, return_counts=False)</div>
+          <div class="desc">Valori distinti in ordine crescente; con return_counts=True restituisce anche le occorrenze.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.nonzero(a)</div>
+          <div class="desc">Indici degli elementi diversi da zero (spesso combinato con una condizione).</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.searchsorted(a, v)</div>
+          <div class="desc">Indice in cui inserire v per mantenere a ordinato.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.partition(a, k)</span><span class="d">porziona l'array così che il k-esimo elemento sia al posto giusto: più veloce di un sort completo</span></div>
+      </div>
+    </section>
+
+    <!-- 10 CASUALI -->
+    <section class="sect" id="casuali" style="--c:var(--rose)">
+      <div class="sect-head"><span class="sect-idx">[10]</span><h2 class="sect-title">Numeri casuali — np.random</h2></div>
+      <p class="sect-desc">Generazione di dati casuali per simulazioni, test e inizializzazione di modelli.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">np.random.seed(n)</div>
+          <div class="desc">Fissa il seme casuale per rendere riproducibili i risultati.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.random.rand(d0, d1, ...)</div>
+          <div class="desc">Numeri casuali uniformi in [0, 1), nella forma indicata.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.random.randn(d0, d1, ...)</div>
+          <div class="desc">Numeri casuali da una normale standard: media 0, deviazione standard 1.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.random.randint(low, high, size)</div>
+          <div class="desc">Interi casuali uniformi nell'intervallo [low, high).</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.random.choice(a, size, replace=True)</div>
+          <div class="desc">Estrae elementi casuali da un array, con o senza reinserimento.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.random.shuffle(a)</div>
+          <div class="desc">Mescola l'array sul posto, lungo il primo asse.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.random.permutation(a)</span><span class="d">come shuffle, ma restituisce una copia mescolata</span></div>
+        <div class="row-item searchable"><span class="fn">np.random.normal(loc, scale, size)</span><span class="d">normale con media e deviazione standard a scelta</span></div>
+        <div class="row-item searchable"><span class="fn">np.random.default_rng(seed)</span><span class="d">l'API moderna consigliata al posto delle funzioni legacy qui sopra</span></div>
+      </div>
+    </section>
+
+    <!-- 11 IO -->
+    <section class="sect" id="io" style="--c:var(--lime)">
+      <div class="sect-head"><span class="sect-idx">[11]</span><h2 class="sect-title">Input / output</h2></div>
+      <p class="sect-desc">Salvare e ricaricare array su disco, in formato binario nativo oppure in testo semplice.</p>
+
+      <div class="cards">
+        <div class="card searchable">
+          <div class="sig">np.save('f.npy', a) / np.load('f.npy')</div>
+          <div class="desc">Formato binario nativo di NumPy: veloce, preserva esattamente forma e dtype.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.savez('f.npz', a=a, b=b)</div>
+          <div class="desc">Salva più array in un unico archivio, poi accessibili per nome dopo il caricamento.</div>
+        </div>
+        <div class="card searchable">
+          <div class="sig">np.savetxt / np.loadtxt</div>
+          <div class="desc">Formato testo leggibile, ad esempio CSV, utile per lo scambio con altri strumenti.</div>
+        </div>
+      </div>
+
+      <div class="rows">
+        <div class="row-item searchable"><span class="fn">np.genfromtxt('f.csv', delimiter=',')</span><span class="d">come loadtxt ma gestisce anche i valori mancanti</span></div>
+      </div>
+    </section>
+
+    <!-- 12 NOTE PRATICHE -->
+    <section class="sect" id="note" style="--c:var(--blue)">
+      <div class="sect-head"><span class="sect-idx">[12]</span><h2 class="sect-title">Note pratiche</h2></div>
+      <p class="sect-desc">Piccole cose che, sapute in anticipo, evitano la maggior parte dei bug più comuni con NumPy.</p>
+
+      <div class="tips">
+        <div class="tip searchable"><span class="n">→</span><p><strong>Vista o copia?</strong> Lo slicing restituisce quasi sempre una vista, cioè condivide la memoria con l'originale: modificarla modifica anche l'array di partenza. Usa a.copy() quando ti serve un array davvero indipendente.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>Vettorizza invece di ciclare.</strong> Un ciclo for su un array NumPy è quasi sempre un segnale che manca un'operazione elementwise o una funzione di aggregazione pronta all'uso.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>Il dtype si propaga.</strong> Mescolare interi e float in un'operazione fa scattare l'upcasting automatico a float; un array di soli interi con una divisione / diventa float senza preavviso.</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>NaN non è mai uguale a NaN.</strong> np.nan == np.nan restituisce False: per verificarlo serve np.isnan().</p></div>
+        <div class="tip searchable"><span class="n">→</span><p><strong>* non è il prodotto tra matrici.</strong> Per quello servono @ oppure np.dot(); * resta sempre elemento per elemento.</p></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Guida pensata per lo studio personale. NumPy è un progetto open source: per i dettagli completi e i casi limite, la <a href="https://numpy.org/doc/stable/" target="_blank" rel="noopener">documentazione ufficiale</a> resta il riferimento definitivo.
+</footer>
+
+<script>
+  // Popola data-search da testo visibile, per il filtro
+  const searchables = document.querySelectorAll('.searchable');
+  searchables.forEach(el => { el.dataset.search = el.textContent.toLowerCase(); });
+
+  const sections = document.querySelectorAll('.sect');
+  const searchInput = document.getElementById('search');
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    searchables.forEach(el => {
+      const match = !q || el.dataset.search.includes(q);
+      el.classList.toggle('hidden', !match);
+    });
+    sections.forEach(sec => {
+      const anyVisible = sec.querySelector('.searchable:not(.hidden)');
+      const empty = q && !anyVisible;
+      sec.classList.toggle('hidden', empty);
+      const link = document.querySelector('.toc a[href="#' + sec.id + '"]');
+      if (link) link.classList.toggle('hidden', empty);
+    });
+  });
+
+  // Scrollspy: evidenzia la voce del menu corrispondente alla sezione visibile
+  const tocLinks = document.querySelectorAll('.toc a');
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector('.toc a[href="#' + entry.target.id + '"]');
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  sections.forEach(sec => spy.observe(sec));
+</script>
+
+</body>
+</html>
