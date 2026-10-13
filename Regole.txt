@@ -2,3 +2,152 @@ Per fare un nuovo commit:       git add .
                                 git commit -m "descrizione della modifica"
                                 git push
 
+
+
+Per NumPy:
+            import numpy as np
+
+            # Creare array
+            a = np.array([1, 2, 3])
+
+            # Creare sequenze
+            np.arange(0, 10, 2)
+
+            # Proprietà
+            A.shape        # forma
+            A.ndim         # numero dimensioni
+            A.size         # numero elementi
+            A.dtype        # tipo dati
+            A.itemsize     # byte per elemento
+
+            # Statistiche
+            A.sum()
+            A.mean()
+            A.std()
+            A.min()
+            A.max()
+
+    Tante operazioni sono simili a MatLab, come per lo slicing.
+
+
+
+Per Pandas:
+            import pandas as pd
+
+            # Creare DataFrame / Series
+            df = pd.DataFrame({"A": [1, 2], "B": [3, 4]})
+            s = pd.Series([1, 2, 3])
+
+            # Leggere / salvare CSV
+            df = pd.read_csv("file.csv")
+            df.to_csv("file.csv", index=False)
+
+            # Informazioni base
+            df.shape           # righe, colonne
+            df.columns         # nomi colonne
+            df.index           # indici righe
+            df.dtypes          # tipo dati colonne
+            df.describe()      # statistiche principali
+
+            # Selezionare colonne
+            df["A"]            # una colonna → Series
+            df[["A", "B"]]     # più colonne → DataFrame
+
+            # Selezionare righe / valori
+            df.iloc[0]         # prima riga per posizione
+            df.iloc[0, 1]      # riga 0, colonna 1
+            df.loc[0, "A"]     # indice 0, colonna A
+
+            # Filtrare
+            df[df["A"] > 2]
+            df[(df["A"] > 2) & (df["B"] < 10)]
+            df[df["A"].isin([1, 2, 3])]
+
+            # Valori unici / conteggi
+            df["A"].unique()
+            df["A"].value_counts()
+
+            # Statistiche
+            df["A"].mean()
+            df["A"].sum()
+            df["A"].min()
+            df["A"].max()
+
+            # Modificare / trasformare
+            df["A"] = df["A"] * 2
+            df["A"].map(lambda x: x * 2)
+            df.apply(funzione)
+
+            # Raggruppare
+            df.groupby("A")["B"].mean()
+            df.groupby("A")["B"].agg(["min", "max", "mean"])
+
+            # Ordinare
+            df.sort_values("A")
+            df.sort_values("A", ascending=False)
+            df.sort_index()
+
+            # Valori mancanti
+            df.isnull()
+            df.notnull()
+            df["A"].fillna(0)
+            df.dropna()
+
+            # Sostituire valori
+            df["A"].replace(1, 10)
+
+            # Cambiare tipo
+            df["A"].astype(float)
+
+            # Rinominare
+            df.rename(columns={"A": "NuovoNome"})
+
+            # Indice
+            df.set_index("A")
+            df.reset_index()
+
+            # Unire DataFrame
+            pd.concat([df1, df2])
+            df1.join(df2)
+
+
+
+Per Matplotlib:
+
+        import matplotlib.pyplot as plt
+
+        # Nuovo grafico
+        plt.figure()
+
+        # Grafici principali
+        plt.plot(x, y)              # grafico a linee
+        plt.bar(x, y)               # grafico a barre
+        plt.hist(x)                 # istogramma
+        plt.hist(x, bins=10)        # istogramma con 10 intervalli
+        plt.scatter(x, y)           # grafico a punti
+
+        # Titolo e assi
+        plt.title("Titolo")
+        plt.xlabel("Asse x")
+        plt.ylabel("Asse y")
+
+        # Personalizzazione semplice
+        plt.grid()                  # mostra griglia
+        plt.xlim(a, b)              # limiti asse x
+        plt.ylim(a, b)              # limiti asse y
+
+        # Più linee nello stesso grafico
+        plt.plot(x, y1, label="A")
+        plt.plot(x, y2, label="B")
+        plt.legend()                # mostra legenda
+
+        # Visualizzare / salvare
+        plt.show()
+        plt.savefig("grafico.png")
+
+        # Con Pandas
+        plt.hist(df["colonna"])
+        plt.scatter(df["x"], df["y"])
+
+        dati = df.groupby("categoria")["valore"].mean()
+        plt.bar(dati.index, dati.values)
